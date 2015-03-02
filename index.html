@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Morse Machine </title>
+  </head>
+  <body>
+    <div>
+      <textarea id="text-string" name="text-string"></textarea>
+      <button onclick="encodeString.call(document.getElementById('text-string'))"> Encode </button>
+    </div>
+    <div>
+      <textarea id="text-morse" name="text-morse"></textarea>
+      <button onclick="decodeString.call(document.getElementById('text-morse'))"> Decode </button>
+    </div>
+    <div id="morse-area"></div>
+    <div id="text-area"></div>
+    <script src="data.js"></script>
+    <script src="morse.js"></script>
+  </body>
+</html>
