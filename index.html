@@ -3,17 +3,31 @@
   <head>
     <title> Morse Machine </title>
   </head>
+  <style>
+    textarea {
+    width: 320px;
+    height: 120px;
+    }
+    pre {
+    width: 100%;
+    min-height: 40px;
+    }
+  </style>
   <body>
     <div>
-      <textarea id="text-string" name="text-string"></textarea>
+      <textarea id="text-string" name="text-string" placeholder="Enter some text here to be converted to Morse Code."></textarea>
       <button onclick="encodeString.call(document.getElementById('text-string'))"> Encode </button>
+      <pre id="morse-area">
+	- .... .. ...        .-- .. .-.. .-..        .... --- .-.. -..        -- --- .-. ... .        -.-. --- -.. . .-.-.-
+      </pre>
     </div>
     <div>
-      <textarea id="text-morse" name="text-morse"></textarea>
+      <textarea id="text-morse" name="text-morse" placeholder="Enter some morse code here to be converted to Text."></textarea>
       <button onclick="decodeString.call(document.getElementById('text-morse'))"> Decode </button>
+      <pre id="text-area">
+	This will hold text.
+      </pre>
     </div>
-    <div id="morse-area"></div>
-    <div id="text-area"></div>
     <script src="data.js"></script>
     <script src="morse.js"></script>
   </body>
