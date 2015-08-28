@@ -26,6 +26,7 @@ var encodeString = function () {
     var data = this.value;
     var emsg = m.encode(data.trim());
     console.log(emsg);
+	createMorse();
     document.getElementById("morse-area").textContent = emsg;
 };
 
@@ -33,5 +34,6 @@ var decodeString = function () {
     var data = this.value;
     var dmsg = m.decode(data.trim());
     console.log(dmsg);
+createMorse();
     document.getElementById("text-area").textContent = dmsg;
 };
