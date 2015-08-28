@@ -26,26 +26,31 @@ function start() {
 
 function createMorse() {
 	var morseBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 10, audioCtx.sampleRate);
-var frameCount = audioCtx.sampleRate * 10.0;
-	var channel0 = morseBuffer.getChannelData(0);
-	for(j = 0; j < frameCount; j = j+32) {
-channel0[j] = 0.2;
+	var frameCount = audioCtx.sampleRate * 10.0;
+
+	var dotBufferArray = new ArrayBuffer(audioCtx.sampleRate);
+	var dashBufferArray = new ArrayBuffer(audioCtx.sampleRate*2);
+	var dotBuffer = new Float32Array(dotBufferArray);
+	var dashBuffer = new Float32Array(dashBufferArray);
+
+	for(k = 2756; k < 8268; k = k + 8) {
+		dotBuffer[k] = 0.2;
 	}
+
+	for(i = 5512; i < 16537; i = i + 8) {
+		dashBuffer[i] = 0.2;
+	}
+
+	var channel0 = morseBuffer.getChannelData(0);
+	for(m = 0; m < frameCount; m = m + 44100) {
+		channel0.set(dotBuffer,m);
+	}
+	console.log(channel0);
+	console.log(dotBuffer);
+	console.log(dashBuffer);
+
 	var bufferSource = audioCtx.createBufferSource();
 	bufferSource.buffer = morseBuffer;
 	bufferSource.connect(audioCtx.destination);
 	bufferSource.start();
-var dotBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 1, audioCtx.sampleRate);
-var dashBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 2, audioCtx.sampleRate);
-var dotBufferArray = new ArrayBuffer(audioCtx.sampleRate/4);
-var dashBufferArray = new ArrayBuffer(audioCtx.sampleRate/2);
-for(k = 0; k < dotBufferArray.byteLength; k = k + 8) {
-	dotBufferArray[k] = 0.2;
-}
-
-for(i = 0; i < dashBuffer.byteLength; i = i + 8) {
-	dashBufferArray[i] = 0.2;
-}
-dotBuffer.getChannelData(0).set(dotBufferArray, 11025);
-dashBuffer.getChannelData(0).set(dashBufferArray, 22050);
 }
