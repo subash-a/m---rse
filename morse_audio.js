@@ -1,37 +1,13 @@
 var audioCtx = new AudioContext();
-var oscillator = audioCtx.createOscillator();
-var gainNode = audioCtx.createGain();
+var dotBufferArray, dashBufferArray, dotBuffer, dashBuffer, emptyBuffer, emptyBufferArray;
 
-// Linking up nodes together
-oscillator.connect(gainNode);
-
-// Playing the oscillator
-oscillator.type = "sine";
-oscillator.frequency.value = 4500;
-oscillator.start();
-
-// Setting volume using gain node
-gainNode.gain.value = 0.5;
-
-// disconnecting the audio (turning it off)
-
-function stop() {
-	gainNode.disconnect(audioCtx.destination);
-}
-
-// connecting the audio to the speaker (turning it on)
-function start() {
-	gainNode.connect(audioCtx.destination);
-}
-
-function createMorse() {
-	var morseBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 10, audioCtx.sampleRate);
-	var frameCount = audioCtx.sampleRate * 10.0;
-
-	var dotBufferArray = new ArrayBuffer(audioCtx.sampleRate);
-	var dashBufferArray = new ArrayBuffer(audioCtx.sampleRate*2);
-	var dotBuffer = new Float32Array(dotBufferArray);
-	var dashBuffer = new Float32Array(dashBufferArray);
+function createAudioSnippets() {
+	dotBufferArray = new ArrayBuffer(audioCtx.sampleRate);
+	dashBufferArray = new ArrayBuffer(audioCtx.sampleRate*2);
+	emptyBufferArray = new ArrayBuffer(audioCtx.sampleRate);
+	dotBuffer = new Float32Array(dotBufferArray);
+	dashBuffer = new Float32Array(dashBufferArray);
+	emptyBuffer = new Float32Array(emptyBufferArray);
 
 	for(k = 2756; k < 8268; k = k + 8) {
 		dotBuffer[k] = 0.2;
@@ -41,14 +17,46 @@ function createMorse() {
 		dashBuffer[i] = 0.2;
 	}
 
-	var channel0 = morseBuffer.getChannelData(0);
-	for(m = 0; m < frameCount; m = m + 44100) {
-		channel0.set(dotBuffer,m);
-	}
-	console.log(channel0);
-	console.log(dotBuffer);
-	console.log(dashBuffer);
+	Object.keys(morsecode.code).map(function(c) {
+		var morseArray = morsecode.code[c].string.split("");
+		morsecode.code[" "].audio = [emptyBuffer];
+		var audioArray = morseArray.map(function(code) {
+			if(code === ".") {
+				return dotBuffer;
+			}
+			else if(code === "-") {
+				return dashBuffer;
+			}
+		});
+		morsecode.code[c].audio = audioArray;
+	});
+}
 
+function createMorse(text) {
+	var finalAudioClip = [];
+	createAudioSnippets();
+	var textArray = text.split("");
+	textArray.map(function(d) {
+		var audioClip = morsecode.code[d.toUpperCase()].audio;
+		finalAudioClip = finalAudioClip.concat(audioClip).concat([emptyBuffer]);
+	});
+
+	var frameCount = audioCtx.sampleRate * finalAudioClip.length;
+	var morseBuffer = audioCtx.createBuffer(1, frameCount, audioCtx.sampleRate);
+
+	var channel0 = morseBuffer.getChannelData(0);
+
+
+	var m = 0;
+	finalAudioClip.forEach(function(clip){
+		channel0.set(clip,m);
+		m = m + 44100;
+	});
+	// channel0.set(dotBuffer,m);
+	// m = m + 44100;
+	// channel0.set(dashBuffer,m);
+	// m = m + 44100;
+	// channel0.set(dotBuffer, m);
 	var bufferSource = audioCtx.createBufferSource();
 	bufferSource.buffer = morseBuffer;
 	bufferSource.connect(audioCtx.destination);

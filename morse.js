@@ -1,12 +1,14 @@
 var MorseMachine = function() {
 	var codemap = morsecode.code;
 	var reversemap = {};
-	Object.keys(codemap).map(function(k){reversemap[codemap[k]] = k});
+	Object.keys(codemap).map(function(k){
+		reversemap[codemap[k].string] = k;
+	});
 	return {
 	    "encode": function (string) {
 		return string
 		    .split("")
-		    .map(function(c){ return codemap[c.toUpperCase()] || c})
+		    .map(function(c){ return codemap[c.toUpperCase()].string || c})
 		    .join(" ");
 	    },
 	    "decode": function (data) {
@@ -19,14 +21,14 @@ var MorseMachine = function() {
 	    }
 	}
 };
-    
+
 var m = new MorseMachine();
 
 var encodeString = function () {
     var data = this.value;
     var emsg = m.encode(data.trim());
     console.log(emsg);
-	createMorse();
+	createMorse(data);
     document.getElementById("morse-area").textContent = emsg;
 };
 
@@ -34,6 +36,6 @@ var decodeString = function () {
     var data = this.value;
     var dmsg = m.decode(data.trim());
     console.log(dmsg);
-createMorse();
+	//createMorse();
     document.getElementById("text-area").textContent = dmsg;
 };
