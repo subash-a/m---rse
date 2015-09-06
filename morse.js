@@ -28,8 +28,16 @@ var encodeString = function () {
     var data = this.value;
     var emsg = m.encode(data.trim());
     console.log(emsg);
-	createMorse(data);
     document.getElementById("morse-area").textContent = emsg;
+};
+
+var encodeAudio = function () {
+	var data = this.value;
+	createMorse(data);
+};
+
+var decodeAudio = function () {
+	readAudioClip();
 };
 
 var decodeString = function () {

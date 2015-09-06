@@ -1,4 +1,5 @@
 var audioCtx = new AudioContext();
+
 var dotBufferArray, dashBufferArray, dotBuffer, dashBuffer, emptyBuffer, emptyBufferArray;
 
 function createAudioSnippets() {
@@ -61,4 +62,27 @@ function createMorse(text) {
 	bufferSource.buffer = morseBuffer;
 	bufferSource.connect(audioCtx.destination);
 	bufferSource.start();
+}
+
+function readAudioClip() {
+	// Get Morse Code Audio Clip input and then resolve it into text.
+	if(!navigator.mediaDevices.getUserMedia) {
+		console.log("User Media Not Supported");
+		return 0;
+	}
+	var onData = function(localMediaStream) {
+		console.log(localMediaStream);
+		var mic = audioCtx.createMediaStreamSource(localMediaStream);
+		var rec = audioCtx.createScriptProcessor(4096, 2, 2);
+		rec.onaudioprocess = function(audioData) {
+			console.log(audioData);
+		}
+		mic.connect(rec);
+		rec.connect(audioCtx.destination);
+	};
+	var onError = function(err) {
+		console.log("User Rejected Request");
+	};
+	var userMedia = navigator.mediaDevices.getUserMedia({audio: true})
+		.then(onData).catch(onError);
 }

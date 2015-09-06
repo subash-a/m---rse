@@ -17,6 +17,7 @@
     <div>
       <textarea id="text-string" name="text-string" placeholder="Enter some text here to be converted to Morse Code."></textarea>
       <button onclick="encodeString.call(document.getElementById('text-string'))"> Encode </button>
+	  <button onclick="encodeAudio.call(document.getElementById('text-string'))"> Encode Audio </button>
       <pre id="morse-area">
 	- .... .. ...        .-- .. .-.. .-..        .... --- .-.. -..        -- --- .-. ... .        -.-. --- -.. . .-.-.-
       </pre>
@@ -24,6 +25,7 @@
     <div>
       <textarea id="text-morse" name="text-morse" placeholder="Enter some morse code here to be converted to Text."></textarea>
       <button onclick="decodeString.call(document.getElementById('text-morse'))"> Decode </button>
+	  <button onclick="decodeAudio.call(document.getElementById('text-morse'))"> Decode Audio </button>
       <pre id="text-area">
 	This will hold text.
       </pre>
