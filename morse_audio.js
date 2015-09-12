@@ -72,13 +72,16 @@ function readAudioClip() {
 	}
 	var onData = function(localMediaStream) {
 		console.log(localMediaStream);
+		var saveBuffer = audioCtx.createBuffer(2, audioCtx.sampleRate * 10, audioCtx.sampleRate);
 		var mic = audioCtx.createMediaStreamSource(localMediaStream);
-		var rec = audioCtx.createScriptProcessor(4096, 2, 2);
-		rec.onaudioprocess = function(audioData) {
-			console.log(audioData);
-		}
-		mic.connect(rec);
-		rec.connect(audioCtx.destination);
+		var processor = audioCtx.createScriptProcessor(2048, 2, 2);
+		var offset = 0;
+		processor.onaudioprocess = function(audioChunk) {
+			saveBuffer = audioChunk.inputBuffer.copyToChannel(saveBuffer.getChannelData(0), offset + audioChunk.duration);
+			audioChunk.outputBuffer = audioChunk.inputBuffer;
+		};
+		mic.connect(processor);
+		processor.connect(audioCtx.destination); 
 	};
 	var onError = function(err) {
 		console.log("User Rejected Request");
